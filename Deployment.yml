@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-app
+  namespace: portal
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: portal-app
+  template:
+    metadata:
+      labels:
+        app: portal-app
+    spec:
+      containers:
+      - name: carblip-portal-app
+        image: us-phoenix-1.ocir.io/axo7dvhusjw2/portal-app-${ENVIRONMENT}:${BUILDRUN_HASH}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "100M"
+            cpu: "100m"
+          limits:
+            memory: "1000M"
+            cpu: "1000m"
+      imagePullSecrets:
+        - name:  registry-secret-portal
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: app
+      #           operator: In
+      #           values:
+      #           - portal
